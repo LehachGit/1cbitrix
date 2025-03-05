@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx:1.24
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./bitrix:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - php-fpm
+      - mariadb
+    networks:
+      - bitrix_network
+
+  php-fpm:
+    image: php:8.2-fpm
+    build: ./php
+    container_name: php-fpm
+    restart: always
+    volumes:
+      - ./bitrix:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    depends_on:
+      - redis
+    networks:
+      - bitrix_network
+
+  mariadb:
+    image: mariadb:10.6
+    container_name: mariadb
+    restart: always
+    env_file: .env  # Используем переменные из .env
+    volumes:
+      - ./mariadb/data:/var/lib/mysql
+      - ./mariadb/config/custom.cnf:/etc/mysql/conf.d/custom.cnf
+    networks:
+      - bitrix_network
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    restart: always
+    volumes:
+      - ./redis:/data
+    networks:
+      - bitrix_network
+
+networks:
+  bitrix_network:
+    driver: bridge
