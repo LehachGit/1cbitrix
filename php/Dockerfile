@@ -1,7 +1,7 @@
 # Используем стабильную версию PHP 8.2 с FPM
 FROM php:8.2-fpm
 
-# Устанавливаем необходимые PHP-расширения для Bitrix
+# Установка пакетов
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \

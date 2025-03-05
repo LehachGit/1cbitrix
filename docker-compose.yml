@@ -12,6 +12,7 @@ services:
     volumes:
       - ./bitrix:/var/www/html
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - php-fpm
       - mariadb
@@ -35,7 +36,7 @@ services:
     image: mariadb:10.6
     container_name: mariadb
     restart: always
-    env_file: .env  # Используем переменные из .env
+    env_file: .env
     volumes:
       - ./mariadb/data:/var/lib/mysql
       - ./mariadb/config/custom.cnf:/etc/mysql/conf.d/custom.cnf
